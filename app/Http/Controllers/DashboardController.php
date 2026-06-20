@@ -10,6 +10,12 @@ class DashboardController extends Controller
     {
         $latest = SensorData::latest()->first();
 
-        return view('dashboard', compact('latest'));
+        $history = SensorData::latest()
+            ->take(20)
+            ->get()
+            ->reverse()
+            ->values();
+
+        return view('dashboard', compact('latest', 'history'));
     }
 }
