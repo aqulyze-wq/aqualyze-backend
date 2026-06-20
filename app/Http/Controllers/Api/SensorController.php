@@ -22,13 +22,25 @@ class SensorController extends Controller
     }
     public function store(Request $request)
     {
+        $statusSuhu = ($request->suhu >= 28 && $request->suhu <= 30)
+            ? 'Normal'
+            : 'Warning';
+    
+        $statusPh = ($request->ph >= 6.5 && $request->ph <= 8)
+            ? 'Normal'
+            : 'Warning';
+    
+        $statusKekeruhan = ($request->kekeruhan <= 10)
+            ? 'Normal'
+            : 'Warning';
+    
         $data = SensorData::create([
             'suhu' => $request->suhu,
             'ph' => $request->ph,
             'kekeruhan' => $request->kekeruhan,
-            'status_suhu' => $request->status_suhu,
-            'status_ph' => $request->status_ph,
-            'status_kekeruhan' => $request->status_kekeruhan,
+            'status_suhu' => $statusSuhu,
+            'status_ph' => $statusPh,
+            'status_kekeruhan' => $statusKekeruhan,
         ]);
     
         return response()->json([

@@ -8,9 +8,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $latest = SensorData::latest()->first();
+        $latest = SensorData::orderBy('id', 'desc')->first();
 
-        $history = SensorData::latest()
+        $history = SensorData::orderBy('id', 'desc')
             ->take(20)
             ->get()
             ->reverse()
