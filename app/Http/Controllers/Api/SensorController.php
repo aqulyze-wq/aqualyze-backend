@@ -10,8 +10,8 @@ class SensorController extends Controller
 {
     public function latest()
     {
-        $data = SensorData::latest()->first();
-
+        $data = SensorData::orderByDesc('id')->first();
+    
         return response()->json($data);
     }
     public function index()

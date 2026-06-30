@@ -2,7 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SensorController;
+use App\Http\Controllers\Api\AuthController;
 
+// Login
+Route::post('/login', [AuthController::class, 'login']);
+
+// Sensor
 Route::get('/latest', [SensorController::class, 'latest']);
 Route::get('/sensor-data', [SensorController::class, 'index']);
 Route::post('/sensor', [SensorController::class, 'store']);
+
+// Logout
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
