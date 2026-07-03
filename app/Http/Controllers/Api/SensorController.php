@@ -47,5 +47,16 @@ class SensorController extends Controller
             'message' => 'Data berhasil disimpan',
             'data' => $data
         ], 201);
+        
+    }
+    public function history()
+    {
+        $history = SensorData::latest()
+            ->take(20)
+            ->get()
+            ->reverse()
+            ->values();
+    
+        return response()->json($history);
     }
 }
