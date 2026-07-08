@@ -24,11 +24,11 @@
                 Dashboard
             </a>
 
-            <a href="#" class="block hover:bg-blue-600 p-2 rounded">
+            <a href="{{ route('monitoring') }}" class="block hover:bg-blue-600 p-2 rounded">
                 Monitoring
             </a>
 
-            <a href="#" class="block hover:bg-blue-600 p-2 rounded">
+            <a href="{{ route('charts') }}" class="block hover:bg-blue-600 p-2 rounded">
                 Grafik
             </a>
 

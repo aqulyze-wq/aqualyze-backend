@@ -29,4 +29,30 @@ class DashboardController extends Controller
 
         return view('dashboard', compact('latest', 'history'));
     }
+
+    public function monitoring()
+    {
+        $latest = SensorData::orderBy('id', 'desc')->first();
+    
+        $history = SensorData::orderBy('id', 'desc')
+            ->take(100)
+            ->get()
+            ->reverse()
+            ->values();
+    
+        return view('monitoring', compact('latest', 'history'));
+    }
+
+   public function charts()
+    {
+        $latest = SensorData::orderBy('id', 'desc')->first();
+    
+        $history = SensorData::orderBy('id', 'desc')
+            ->take(100)
+            ->get()
+            ->reverse()
+            ->values();
+    
+        return view('charts', compact('latest', 'history'));
+    }
 }
