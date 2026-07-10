@@ -19,15 +19,21 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $latest = SensorData::orderBy('id', 'desc')->first();
-
-        $history = SensorData::orderBy('id', 'desc')
+        $latest = SensorData::orderByDesc('id')->first();
+    
+        $history = SensorData::orderByDesc('id')
             ->take(20)
             ->get()
             ->reverse()
             ->values();
-
-        return view('dashboard', compact('latest', 'history'));
+    
+        $totalData = SensorData::count();
+    
+        return view('dashboard', compact(
+            'latest',
+            'history',
+            'totalData'
+        ));
     }
 
     public function monitoring()
@@ -46,13 +52,13 @@ class DashboardController extends Controller
    public function charts()
     {
         $latest = SensorData::orderBy('id', 'desc')->first();
-    
+
         $history = SensorData::orderBy('id', 'desc')
             ->take(100)
             ->get()
             ->reverse()
             ->values();
-    
+
         return view('charts', compact('latest', 'history'));
     }
 }

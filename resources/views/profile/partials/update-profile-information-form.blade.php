@@ -1,64 +1,91 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" style="display:flex;flex-direction:column;gap:1.125rem;">
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        <div class="aq-form-group" style="margin-bottom:0;">
+            <label for="name" class="aq-label">Nama Lengkap</label>
+            <div style="position:relative;">
+                <i class="bi bi-person" style="position:absolute;left:0.875rem;top:50%;transform:translateY(-50%);color:var(--aq-text-muted);font-size:0.9rem;pointer-events:none;"></i>
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    class="aq-input {{ $errors->has('name') ? 'error' : '' }}"
+                    style="padding-left:2.5rem;"
+                    value="{{ old('name', $user->name) }}"
+                    required
+                    autofocus
+                    autocomplete="name"
+                    placeholder="Masukkan nama lengkap">
+            </div>
+            @error('name')
+                <div class="aq-input-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+        <div class="aq-form-group" style="margin-bottom:0;">
+            <label for="email" class="aq-label">Alamat Email</label>
+            <div style="position:relative;">
+                <i class="bi bi-envelope" style="position:absolute;left:0.875rem;top:50%;transform:translateY(-50%);color:var(--aq-text-muted);font-size:0.9rem;pointer-events:none;"></i>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="aq-input {{ $errors->has('email') ? 'error' : '' }}"
+                    style="padding-left:2.5rem;"
+                    value="{{ old('email', $user->email) }}"
+                    required
+                    autocomplete="username"
+                    placeholder="admin@aqualyze.id">
+            </div>
+            @error('email')
+                <div class="aq-input-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    {{ $message }}
+                </div>
+            @enderror
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
+                <div class="aq-alert aq-alert-warning" style="margin-top:0.75rem;">
+                    <i class="bi bi-exclamation-triangle-fill aq-alert-icon"></i>
+                    <div class="aq-alert-text">
+                        Email belum terverifikasi.
+                        <button form="send-verification"
+                                style="background:none;border:none;color:#B45309;font-weight:600;cursor:pointer;padding:0;font-size:inherit;text-decoration:underline;">
+                            Kirim ulang email verifikasi.
                         </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
+                        @if (session('status') === 'verification-link-sent')
+                            <div style="margin-top:0.25rem;color:#15803D;font-size:0.8125rem;font-weight:500;">
+                                Link verifikasi baru telah dikirim.
+                            </div>
+                        @endif
+                    </div>
                 </div>
             @endif
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
+        <div style="display:flex;align-items:center;gap:0.75rem;padding-top:0.25rem;">
+            <button type="submit" class="aq-btn aq-btn-primary">
+                <i class="bi bi-check2"></i>
+                Simpan Perubahan
+            </button>
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <span style="font-size:0.8125rem;color:var(--aq-success);display:flex;align-items:center;gap:0.25rem;">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Tersimpan
+                </span>
             @endif
         </div>
+
     </form>
+
 </section>

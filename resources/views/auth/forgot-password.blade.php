@@ -1,25 +1,55 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+
+    <div class="guest-form-header">
+        <h2>Reset Password</h2>
+        <p>Enter your email address and we'll send you a reset link.</p>
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    @if (session('status'))
+        <div class="aq-alert aq-alert-success" style="margin-bottom:1.25rem;">
+            <i class="bi bi-check-circle-fill aq-alert-icon"></i>
+            <span class="aq-alert-text">{{ session('status') }}</span>
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="aq-form-group">
+            <label for="email" class="aq-label">Email Address</label>
+            <div style="position:relative;">
+                <i class="bi bi-envelope" style="position:absolute;left:0.875rem;top:50%;transform:translateY(-50%);color:var(--aq-text-muted);font-size:0.9rem;pointer-events:none;"></i>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    required
+                    autofocus
+                    placeholder="admin@aqualyze.id"
+                    class="aq-input {{ $errors->has('email') ? 'error' : '' }}"
+                    style="padding-left:2.5rem;">
+            </div>
+            @error('email')
+                <div class="aq-input-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
+        <button type="submit" class="aq-btn aq-btn-primary aq-btn-full">
+            <i class="bi bi-envelope-fill"></i>
+            Send Reset Link
+        </button>
+
+        <div style="margin-top:1.25rem;text-align:center;">
+            <a href="{{ route('login') }}"
+               style="font-size:0.8125rem;color:var(--aq-primary);text-decoration:none;display:inline-flex;align-items:center;gap:0.375rem;">
+                <i class="bi bi-arrow-left"></i>
+                Back to Sign In
+            </a>
         </div>
     </form>
+
 </x-guest-layout>

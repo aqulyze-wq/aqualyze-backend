@@ -1,27 +1,37 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+
+    <div class="guest-form-header">
+        <h2>Confirm Password</h2>
+        <p>This is a secure area. Please confirm your password before continuing.</p>
     </div>
 
-    <form method="POST" action="{{ route('password.confirm') }}">
+    <form method="POST" action="{{ route('password.confirm') }}" style="display:flex;flex-direction:column;gap:1.25rem;">
         @csrf
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="aq-form-group" style="margin-bottom:0;">
+            <label for="password" class="aq-label">Password</label>
+            <div style="position:relative;">
+                <i class="bi bi-lock" style="position:absolute;left:0.875rem;top:50%;transform:translateY(-50%);color:var(--aq-text-muted);font-size:0.9rem;pointer-events:none;"></i>
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="Enter your password"
+                    class="aq-input {{ $errors->has('password') ? 'error' : '' }}"
+                    style="padding-left:2.5rem;">
+            </div>
+            @error('password')
+                <div class="aq-input-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
+            @enderror
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="aq-btn aq-btn-primary aq-btn-full">
+            <i class="bi bi-shield-lock-fill"></i>
+            Confirm
+        </button>
+
     </form>
+
 </x-guest-layout>

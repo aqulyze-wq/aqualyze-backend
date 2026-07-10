@@ -2,173 +2,308 @@
 
 @section('content')
 
-<h1 class="text-4xl font-bold mb-8 text-gray-800">
-    Dashboard Aqualyze
-</h1>
+{{-- Page Header --}}
+<div class="aq-page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Overview of water quality parameters — live sensor data.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+        <span class="aq-live-dot">Auto-refresh every 5s</span>
+    </div>
+</div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+{{-- ── Stat Cards ── --}}
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;">
 
-    <!-- Suhu -->
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-
-        <h2 class="text-gray-500 text-lg">
-            🌡 Suhu Air
-        </h2>
-
-        <p class="text-5xl font-bold mt-3 text-blue-600">
-            {{ $latest->suhu ?? '-' }} °C
-        </p>
-
-
-         @php
-            $warnaSuhu = match($latest->status_suhu ?? '') {
-                'Normal' => 'bg-green-100 text-green-700',
-                'Warning' => 'bg-yellow-100 text-yellow-700',
-                'Bahaya' => 'bg-red-100 text-red-700',
-                default => 'bg-gray-100 text-gray-700'
-        };
-        @endphp
-        <span class="inline-block mt-4 px-4 py-2 rounded-full {{ $warnaSuhu }}">
-              {{ $latest->status_suhu ?? 'Tidak Diketahui' }}  
-        </span>
-
+    {{-- Suhu --}}
+    <div class="aq-stat-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-stat-label">Suhu Air</span>
+            <div class="aq-stat-icon" style="background:#EFF6FF;color:#2563EB;">
+                <i class="bi bi-thermometer-half"></i>
+            </div>
+        </div>
+        <div>
+            <div class="aq-stat-value" style="color:#2563EB;">
+                {{ $latest->suhu }}<span class="aq-stat-unit">°C</span>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-badge {{ $latest->status_suhu === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                <i class="bi bi-{{ $latest->status_suhu === 'Normal' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
+                {{ $latest->status_suhu }}
+            </span>
+            <span class="aq-stat-footer">Ideal: 28 – 30°C</span>
+        </div>
     </div>
 
-    <!-- PH -->
-
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-
-        <h2 class="text-gray-500 text-lg">
-            🧪 pH Air
-        </h2>
-
-        <p class="text-5xl font-bold mt-3 text-purple-600">
-            {{ $latest->ph ?? '-' }}
-        </p>
-
-        <span class="inline-block mt-4 px-4 py-2 rounded-full bg-green-100 text-green-700">
-            {{ $latest->status_ph ?? '-' }}
-        </span>
-
+    {{-- pH --}}
+    <div class="aq-stat-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-stat-label">pH Air</span>
+            <div class="aq-stat-icon" style="background:#F5F3FF;color:#7C3AED;">
+                <i class="bi bi-droplet-half"></i>
+            </div>
+        </div>
+        <div>
+            <div class="aq-stat-value" style="color:#7C3AED;">
+                {{ $latest->ph }}<span class="aq-stat-unit">pH</span>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-badge {{ $latest->status_ph === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                <i class="bi bi-{{ $latest->status_ph === 'Normal' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
+                {{ $latest->status_ph }}
+            </span>
+            <span class="aq-stat-footer">Ideal: 6.5 – 8.0</span>
+        </div>
     </div>
 
-    <!-- Kekeruhan -->
+    {{-- Kekeruhan --}}
+    <div class="aq-stat-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-stat-label">Kekeruhan</span>
+            <div class="aq-stat-icon" style="background:#ECFEFF;color:#0891B2;">
+                <i class="bi bi-water"></i>
+            </div>
+        </div>
+        <div>
+            <div class="aq-stat-value" style="color:#0891B2;">
+                {{ $latest->kekeruhan }}<span class="aq-stat-unit">NTU</span>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-badge {{ $latest->status_kekeruhan === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                <i class="bi bi-{{ $latest->status_kekeruhan === 'Normal' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
+                {{ $latest->status_kekeruhan }}
+            </span>
+            <span class="aq-stat-footer">Max: 10 NTU</span>
+        </div>
+    </div>
 
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-
-        <h2 class="text-gray-500 text-lg">
-            💧 Kekeruhan
-        </h2>
-
-        <p class="text-5xl font-bold mt-3 text-cyan-600">
-            {{ $latest->kekeruhan ?? '-' }} NTU
-        </p>
-
-        <span class="inline-block mt-4 px-4 py-2 rounded-full bg-green-100 text-green-700">
-            {{ $latest->status_kekeruhan ?? '-' }}
-        </span>
-
+    {{-- Total Data --}}
+    <div class="aq-stat-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="aq-stat-label">Total Data</span>
+            <div class="aq-stat-icon" style="background:#EFF6FF;color:#2563EB;">
+                <i class="bi bi-database-fill"></i>
+            </div>
+        </div>
+        <div>
+            <div class="aq-stat-value" style="color:#0F172A;">
+                {{ number_format($totalData) }}
+            </div>
+        </div>
+        <div>
+            <span class="aq-stat-footer">
+                <i class="bi bi-clock"></i>
+                {{ $latest->created_at->format('d M Y, H:i') }}
+            </span>
+        </div>
     </div>
 
 </div>
 
-<div class="bg-white rounded-2xl shadow-lg p-6 mt-8">
+{{-- ── Bottom Row: Live Summary + Chart ── --}}
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:1rem;align-items:start;">
 
-    <h2 class="text-xl font-semibold mb-4">
-        📅 Data Terakhir
-    </h2>
+    {{-- Live Monitoring Summary --}}
+    <div class="aq-card" style="height:100%;">
+        <div class="aq-card-header">
+            <span class="aq-card-title">
+                <i class="bi bi-broadcast" style="color:var(--aq-primary);margin-right:0.375rem;"></i>
+                Live Readings
+            </span>
+            <span class="aq-badge aq-badge-live">
+                <i class="bi bi-circle-fill" style="font-size:0.45rem;"></i>
+                Live
+            </span>
+        </div>
+        <div class="aq-card-body" style="display:flex;flex-direction:column;gap:1rem;">
 
-    <p class="text-gray-700 text-lg">
-        {{ $latest->created_at ?? 'Belum ada data' }}
-    </p>
+            {{-- Suhu --}}
+            <div style="background:var(--aq-surface);border:1px solid var(--aq-border);border-radius:var(--aq-radius-sm);padding:1rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <i class="bi bi-thermometer-half" style="color:#2563EB;font-size:1rem;"></i>
+                        <span style="font-size:0.75rem;font-weight:600;color:var(--aq-text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Suhu Air</span>
+                    </div>
+                    <span class="aq-badge {{ $latest->status_suhu === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                        {{ $latest->status_suhu }}
+                    </span>
+                </div>
+                <div style="font-size:1.875rem;font-weight:800;color:#2563EB;letter-spacing:-0.03em;line-height:1;">
+                    {{ $latest->suhu }}<span style="font-size:1rem;font-weight:500;color:var(--aq-text-secondary);margin-left:2px;">°C</span>
+                </div>
+                {{-- Progress bar --}}
+                <div style="margin-top:0.75rem;background:#E2E8F0;border-radius:99px;height:4px;overflow:hidden;">
+                    <div style="height:100%;border-radius:99px;background:#2563EB;width:{{ min(100, max(0, ($latest->suhu / 40) * 100)) }}%;transition:width 0.5s;"></div>
+                </div>
+            </div>
+
+            {{-- pH --}}
+            <div style="background:var(--aq-surface);border:1px solid var(--aq-border);border-radius:var(--aq-radius-sm);padding:1rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <i class="bi bi-droplet-half" style="color:#7C3AED;font-size:1rem;"></i>
+                        <span style="font-size:0.75rem;font-weight:600;color:var(--aq-text-secondary);text-transform:uppercase;letter-spacing:0.05em;">pH Air</span>
+                    </div>
+                    <span class="aq-badge {{ $latest->status_ph === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                        {{ $latest->status_ph }}
+                    </span>
+                </div>
+                <div style="font-size:1.875rem;font-weight:800;color:#7C3AED;letter-spacing:-0.03em;line-height:1;">
+                    {{ $latest->ph }}<span style="font-size:1rem;font-weight:500;color:var(--aq-text-secondary);margin-left:2px;">pH</span>
+                </div>
+                <div style="margin-top:0.75rem;background:#E2E8F0;border-radius:99px;height:4px;overflow:hidden;">
+                    <div style="height:100%;border-radius:99px;background:#7C3AED;width:{{ min(100, max(0, ($latest->ph / 14) * 100)) }}%;transition:width 0.5s;"></div>
+                </div>
+            </div>
+
+            {{-- Kekeruhan --}}
+            <div style="background:var(--aq-surface);border:1px solid var(--aq-border);border-radius:var(--aq-radius-sm);padding:1rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <i class="bi bi-water" style="color:#0891B2;font-size:1rem;"></i>
+                        <span style="font-size:0.75rem;font-weight:600;color:var(--aq-text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Kekeruhan</span>
+                    </div>
+                    <span class="aq-badge {{ $latest->status_kekeruhan === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                        {{ $latest->status_kekeruhan }}
+                    </span>
+                </div>
+                <div style="font-size:1.875rem;font-weight:800;color:#0891B2;letter-spacing:-0.03em;line-height:1;">
+                    {{ $latest->kekeruhan }}<span style="font-size:1rem;font-weight:500;color:var(--aq-text-secondary);margin-left:2px;">NTU</span>
+                </div>
+                <div style="margin-top:0.75rem;background:#E2E8F0;border-radius:99px;height:4px;overflow:hidden;">
+                    <div style="height:100%;border-radius:99px;background:#0891B2;width:{{ min(100, max(0, ($latest->kekeruhan / 100) * 100)) }}%;transition:width 0.5s;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {{-- Trend Chart --}}
+    <div class="aq-card">
+        <div class="aq-card-header">
+            <span class="aq-card-title">
+                <i class="bi bi-graph-up" style="color:var(--aq-primary);margin-right:0.375rem;"></i>
+                Sensor Trend
+            </span>
+            <span style="font-size:0.75rem;color:var(--aq-text-muted);">Last 20 readings</span>
+        </div>
+        <div class="aq-card-body">
+            <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1rem;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:var(--aq-text-secondary);">
+                    <span style="display:inline-block;width:20px;height:3px;border-radius:2px;background:#2563EB;"></span>
+                    Suhu (°C)
+                </div>
+                <div style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:var(--aq-text-secondary);">
+                    <span style="display:inline-block;width:20px;height:3px;border-radius:2px;background:#7C3AED;"></span>
+                    pH
+                </div>
+                <div style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:var(--aq-text-secondary);">
+                    <span style="display:inline-block;width:20px;height:3px;border-radius:2px;background:#0891B2;"></span>
+                    Kekeruhan (NTU)
+                </div>
+            </div>
+            <div class="aq-chart-container">
+                <canvas id="sensorChart"></canvas>
+            </div>
+        </div>
+    </div>
 
 </div>
 
-<div class="bg-white rounded-2xl shadow-lg p-6 mt-8">
-
-    <h2 class="text-xl font-semibold mb-6">
-        📈 Grafik Monitoring Sensor
-    </h2>
-
-    <canvas id="sensorChart"></canvas>
-
-</div>
-
+{{-- Chart.js --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
+    const labels   = @json($history->pluck('created_at')->map(fn($d) => \Carbon\Carbon::parse($d)->format('H:i')));
+    const suhuData = @json($history->pluck('suhu'));
+    const phData   = @json($history->pluck('ph'));
+    const ntuData  = @json($history->pluck('kekeruhan'));
 
-const labels = @json($history->pluck('id'));
+    Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
+    Chart.defaults.font.size   = 12;
+    Chart.defaults.color       = '#64748B';
 
-const suhu = @json($history->pluck('suhu'));
-
-const ph = @json($history->pluck('ph'));
-
-const kekeruhan = @json($history->pluck('kekeruhan'));
-
-const ctx = document.getElementById('sensorChart');
-
-new Chart(ctx, {
-
-    type: 'line',
-
-    data: {
-
-        labels: labels,
-
-        datasets: [
-
-            {
-                label: 'Suhu (°C)',
-                data: suhu,
-                borderWidth: 2,
-                tension: 0.4
+    new Chart(document.getElementById('sensorChart'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Suhu (°C)',
+                    data: suhuData,
+                    borderColor: '#2563EB',
+                    backgroundColor: 'rgba(37,99,235,0.08)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: '#2563EB',
+                    fill: true,
+                    tension: 0.4,
+                },
+                {
+                    label: 'pH',
+                    data: phData,
+                    borderColor: '#7C3AED',
+                    backgroundColor: 'rgba(124,58,237,0.06)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: '#7C3AED',
+                    fill: true,
+                    tension: 0.4,
+                },
+                {
+                    label: 'Kekeruhan (NTU)',
+                    data: ntuData,
+                    borderColor: '#0891B2',
+                    backgroundColor: 'rgba(8,145,178,0.06)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: '#0891B2',
+                    fill: true,
+                    tension: 0.4,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#0F172A',
+                    titleColor: '#94A3B8',
+                    bodyColor: '#F8FAFC',
+                    padding: 12,
+                    cornerRadius: 8,
+                    borderColor: '#1E293B',
+                    borderWidth: 1,
+                },
             },
-
-            {
-                label: 'pH',
-                data: ph,
-                borderWidth: 2,
-                tension: 0.4
+            scales: {
+                x: {
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: { maxTicksLimit: 8 },
+                },
+                y: {
+                    grid: { color: '#F1F5F9', drawBorder: false },
+                    border: { display: false, dash: [4, 4] },
+                },
             },
-
-            {
-                label: 'Kekeruhan (NTU)',
-                data: kekeruhan,
-                borderWidth: 2,
-                tension: 0.4
-            }
-
-        ]
-
-    },
-
-    options: {
-
-        responsive: true,
-
-        plugins: {
-
-            legend: {
-
-                position: 'top'
-
-            }
-
-        }
-
-    }
-
-});
-
+        },
+    });
 </script>
+
+{{-- Auto-refresh --}}
 <script>
-
-setInterval(function(){
-
-    location.reload();
-
-},5000);
-
+    setTimeout(function () { location.reload(); }, 5000);
 </script>
+
 @endsection
