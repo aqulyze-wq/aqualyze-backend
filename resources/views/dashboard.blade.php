@@ -34,7 +34,7 @@
                 <i class="bi bi-{{ $latest->status_suhu === 'Normal' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
                 {{ $latest->status_suhu }}
             </span>
-            <span class="aq-stat-footer">Ideal: 28 – 30°C</span>
+            <span class="aq-stat-footer">Ideal: 25 – 30°C</span>
         </div>
     </div>
 
@@ -78,9 +78,10 @@
                 <i class="bi bi-{{ $latest->status_kekeruhan === 'Normal' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
                 {{ $latest->status_kekeruhan }}
             </span>
-            <span class="aq-stat-footer">Max: 10 NTU</span>
+            <span class="aq-stat-footer">Ideal: 0,5 - 25 NTU</span>
         </div>
     </div>
+
 
     {{-- Total Data --}}
     <div class="aq-stat-card">
@@ -129,7 +130,15 @@
                         <i class="bi bi-thermometer-half" style="color:#2563EB;font-size:1rem;"></i>
                         <span style="font-size:0.75rem;font-weight:600;color:var(--aq-text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Suhu Air</span>
                     </div>
-                    <span class="aq-badge {{ $latest->status_suhu === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                    @php
+                        $statusClass = match($latest->status_suhu){
+                            'Normal'  => 'aq-badge-success',
+                            'Warning' => 'aq-badge-warning',
+                            'Bahaya'  => 'aq-badge-danger',
+                            default   => 'aq-badge-warning'
+                        };
+                    @endphp
+                    <span class="aq-badge {{ $statusClass }}">
                         {{ $latest->status_suhu }}
                     </span>
                 </div>
@@ -149,9 +158,17 @@
                         <i class="bi bi-droplet-half" style="color:#7C3AED;font-size:1rem;"></i>
                         <span style="font-size:0.75rem;font-weight:600;color:var(--aq-text-secondary);text-transform:uppercase;letter-spacing:0.05em;">pH Air</span>
                     </div>
-                    <span class="aq-badge {{ $latest->status_ph === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
-                        {{ $latest->status_ph }}
-                    </span>
+                    @php
+                        $statusClass = match($latest->status_ph){
+                            'Normal'  => 'aq-badge-success',
+                            'Warning' => 'aq-badge-warning',
+                            'Bahaya'  => 'aq-badge-danger',
+                            default   => 'aq-badge-warning'
+                        };
+                        @endphp
+                <span class="aq-badge {{ $statusClass }}">
+                    {{ $latest->status_ph }}
+                </span>
                 </div>
                 <div style="font-size:1.875rem;font-weight:800;color:#7C3AED;letter-spacing:-0.03em;line-height:1;">
                     {{ $latest->ph }}<span style="font-size:1rem;font-weight:500;color:var(--aq-text-secondary);margin-left:2px;">pH</span>
@@ -168,7 +185,15 @@
                         <i class="bi bi-water" style="color:#0891B2;font-size:1rem;"></i>
                         <span style="font-size:0.75rem;font-weight:600;color:var(--aq-text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Kekeruhan</span>
                     </div>
-                    <span class="aq-badge {{ $latest->status_kekeruhan === 'Normal' ? 'aq-badge-success' : 'aq-badge-warning' }}">
+                    @php
+                    $statusClass = match($latest->status_kekeruhan){
+                        'Normal'  => 'aq-badge-success',
+                        'Warning' => 'aq-badge-warning',
+                        'Bahaya'  => 'aq-badge-danger',
+                        default   => 'aq-badge-warning'
+                    };
+                    @endphp
+                    <span class="aq-badge {{ $statusClass }}">
                         {{ $latest->status_kekeruhan }}
                     </span>
                 </div>

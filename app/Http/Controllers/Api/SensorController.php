@@ -33,17 +33,74 @@ class SensorController extends Controller
     }
     public function store(Request $request)
     {
-        $statusSuhu = ($request->suhu >= 28 && $request->suhu <= 30)
-            ? 'Normal'
-            : 'Warning';
+        // =======================
+        // Status Suhu
+        // Normal  : 25 - 30
+        // Warning : 23 - <25 atau >30 - 32
+        // Bahaya  : <23 atau >32
+        // =======================
+
+        if ($request->suhu >= 25 && $request->suhu <= 30) {
+
+            $statusSuhu = "Normal";
+
+        } elseif (
+            ($request->suhu >= 23 && $request->suhu < 25) ||
+            ($request->suhu > 30 && $request->suhu <= 32)
+        ) {
+
+            $statusSuhu = "Warning";
+
+        } else {
+
+            $statusSuhu = "Bahaya";
+
+        }
     
-        $statusPh = ($request->ph >= 6.5 && $request->ph <= 8)
-            ? 'Normal'
-            : 'Warning';
+        // =======================
+        // Status pH
+        // Normal : 6.5 - 8.0
+        // Warning : 6.0 - <6.5 atau >8.0 - 8.5
+        // Bahaya : <6.0 atau >8.5
+        // =======================
+
+        if ($request->ph >= 6.5 && $request->ph <= 8) {
+
+            $statusPh = "Normal";
+
+        } elseif (
+            ($request->ph >= 6 && $request->ph < 6.5) ||
+            ($request->ph > 8 && $request->ph <= 8.5)
+        ) {
+
+            $statusPh = "Warning";
+
+        } else {
+
+            $statusPh = "Bahaya";
+
+        }
     
-        $statusKekeruhan = ($request->kekeruhan <= 10)
-            ? 'Normal'
-            : 'Warning';
+        // =======================
+        // Status Kekeruhan
+        // Normal  : 0 - 25 NTU
+        // Warning : >25 - 50 NTU
+        // Bahaya  : >50 NTU
+        // =======================
+
+        if ($request->kekeruhan <= 25) {
+
+            $statusKekeruhan = "Normal";
+
+        } elseif ($request->kekeruhan <= 50) {
+
+            $statusKekeruhan = "Warning";
+
+        } else {
+
+            $statusKekeruhan = "Bahaya";
+
+        }
     
         $data = SensorData::create([
             'suhu' => $request->suhu,
