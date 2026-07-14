@@ -1,8 +1,7 @@
 <?php
 // ================================================================
 // Nama Sistem  : Aqualyze - Smart Water Monitoring System
-// Author       : Refan Rustoni Putra
-// NIM          : 10824005
+// Author       : Refan Rustoni Putra(10824005), Andini Putri Yani(10824011)
 // Versi        : 1.3.0
 // Tahun        : 2026
 // Ownership    : Capstone Project - Universitas
@@ -34,6 +33,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**

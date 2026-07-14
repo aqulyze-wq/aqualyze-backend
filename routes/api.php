@@ -14,6 +14,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SensorController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DeviceApiController;
+
+
 
 // Login   
 Route::post('/login', [AuthController::class, 'login']);
@@ -23,6 +26,10 @@ Route::get('/latest', [SensorController::class, 'latest']);
 Route::get('/sensor-data', [SensorController::class, 'index']);
 Route::post('/sensor', [SensorController::class, 'store']);
 Route::get('/history', [SensorController::class, 'history']);
+
+//device
+Route::post('/device/update', [DeviceController::class, 'updateStatus']);
+Route::post('/device/update', [DeviceApiController::class, 'updateStatus']);
 
 // Logout
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);

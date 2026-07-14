@@ -78,7 +78,7 @@
                 <i class="bi bi-{{ $latest->status_kekeruhan === 'Normal' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
                 {{ $latest->status_kekeruhan }}
             </span>
-            <span class="aq-stat-footer">Ideal: 0,5 - 25 NTU</span>
+            <span class="aq-stat-footer">Ideal: 0 - 30 NTU</span>
         </div>
     </div>
 

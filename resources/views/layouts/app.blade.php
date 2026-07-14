@@ -42,6 +42,16 @@
 
             <span class="aq-nav-label">Main Menu</span>
 
+            @if(auth()->user()->role == 'admin')
+
+            <a href="{{ route('devices.index') }}"
+               class="aq-nav-item {{ request()->routeIs('devices.*') ? 'active' : '' }}">
+                <i class="bi bi-router nav-icon"></i>
+                <span>Perangkat</span>
+            </a>
+
+            @endif
+
             <a href="{{ route('dashboard') }}"
                class="aq-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2-fill nav-icon"></i>
@@ -62,7 +72,7 @@
 
             <span class="aq-nav-label">Account</span>
 
-            <a href="{{ route('profile.edit') }}"
+            <a href="{{ route('dashboard') }}"
                class="aq-nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
                 <i class="bi bi-person-circle nav-icon"></i>
                 <span>Profil</span>
@@ -104,20 +114,34 @@
                 </button>
                 <div>
                     <div class="aq-page-title">
-                        @if(request()->routeIs('dashboard'))       Dashboard
-                        @elseif(request()->routeIs('monitoring'))   Monitoring Sensor
-                        @elseif(request()->routeIs('charts'))       Grafik Data
-                        @elseif(request()->routeIs('profile.*'))    Profil Akun
-                        @else                                       Aqualyze
+                        @if(request()->routeIs('dashboard'))
+                            Dashboard
+                        @elseif(request()->routeIs('monitoring'))
+                            Monitoring Sensor
+                        @elseif(request()->routeIs('charts'))
+                            Grafik Data
+                        @elseif(request()->routeIs('devices.*'))
+                            Manajemen Perangkat
+                        @elseif(request()->routeIs('profile.*'))
+                            Profil Akun
+                        @else
+                            Aqualyze
                         @endif
                     </div>
                     <div class="aq-breadcrumb">
                         Aqualyze &rsaquo;
-                        @if(request()->routeIs('dashboard'))       Dashboard
-                        @elseif(request()->routeIs('monitoring'))   Monitoring
-                        @elseif(request()->routeIs('charts'))       Grafik
-                        @elseif(request()->routeIs('profile.*'))    Profil
-                        @else                                       Home
+                        @if(request()->routeIs('dashboard'))
+                            Dashboard
+                        @elseif(request()->routeIs('monitoring'))
+                            Monitoring
+                        @elseif(request()->routeIs('charts'))
+                            Grafik
+                        @elseif(request()->routeIs('devices.*'))
+                            Perangkat
+                        @elseif(request()->routeIs('profile.*'))
+                            Profil
+                        @else
+                            Home
                         @endif
                     </div>
                 </div>

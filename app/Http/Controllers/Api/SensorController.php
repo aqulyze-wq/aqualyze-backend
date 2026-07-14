@@ -1,8 +1,7 @@
 <?php
 // ================================================================
 // Nama Sistem  : Aqualyze - Smart Water Monitoring System
-// Author       : Refan Rustoni Putra
-// NIM          : 10824005
+// Author       : Refan Rustoni Putra(10824005), Andini Putri Yani(10824011)
 // Versi        : 1.3.0
 // Tahun        : 2026
 // Ownership    : Capstone Project - Universitas
@@ -16,6 +15,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SensorData;
+
 
 class SensorController extends Controller
 {
@@ -83,12 +83,12 @@ class SensorController extends Controller
     
         // =======================
         // Status Kekeruhan
-        // Normal  : 0 - 25 NTU
-        // Warning : >25 - 50 NTU
+        // Normal  : 0 - 30 NTU
+        // Warning : >30 - 50 NTU
         // Bahaya  : >50 NTU
         // =======================
 
-        if ($request->kekeruhan <= 25) {
+        if ($request->kekeruhan <= 30) {
 
             $statusKekeruhan = "Normal";
 
