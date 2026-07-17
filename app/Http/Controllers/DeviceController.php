@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityHelper;
 
 class DeviceController extends Controller
 {
@@ -66,6 +67,13 @@ class DeviceController extends Controller
             'last_seen'   => now(),
 
         ]);
+        ActivityHelper::log(
+
+            'Device',
+
+            'Menambahkan device '.$request->nama_device
+
+        );
 
         return redirect()
             ->route('devices.index')
@@ -115,9 +123,19 @@ class DeviceController extends Controller
 
         ]);
 
+        ActivityHelper::log(
+
+            'Device',
+
+            'Mengubah device '.$device->nama_device
+
+        );
+
         return redirect()
+
             ->route('devices.index')
-            ->with('success', 'Perangkat berhasil diperbarui.');
+
+            ->with('success','Perangkat berhasil diperbarui.');
     }
 
     /*
@@ -128,10 +146,20 @@ class DeviceController extends Controller
 
     public function destroy(Device $device)
     {
+        ActivityHelper::log(
+
+            'Device',
+
+            'Menghapus device '.$device->nama_device
+
+        );
+
         $device->delete();
 
         return redirect()
+
             ->route('devices.index')
-            ->with('success', 'Perangkat berhasil dihapus.');
+
+            ->with('success','Perangkat berhasil dihapus.');
     }
 }

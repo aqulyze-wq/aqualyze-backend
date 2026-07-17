@@ -42,13 +42,35 @@
 
             <span class="aq-nav-label">Main Menu</span>
 
-            @if(auth()->user()->role == 'admin')
+            @if(Auth::user()->role == 'admin')
 
             <a href="{{ route('devices.index') }}"
-               class="aq-nav-item {{ request()->routeIs('devices.*') ? 'active' : '' }}">
-                <i class="bi bi-router nav-icon"></i>
-                <span>Perangkat</span>
+            class="aq-nav-item {{ request()->routeIs('devices.*') ? 'active' : '' }}">
+            <i class="bi bi-router nav-icon"></i>
+            <span>Perangkat</span>
             </a>
+
+            <a href="{{ route('users.index') }}"
+            class="aq-nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+
+            <i class="bi bi-people-fill nav-icon"></i>
+
+            <span>Account Management</span>
+
+            </a>
+
+            <a href="{{ route('activity.index') }}"
+            class="aq-nav-item {{ request()->routeIs('activity.*') ? 'active' : '' }}">
+            <i class="bi bi-clock-history nav-icon"></i>
+            <span>Activity Log</span>
+            </a>
+
+            <a href="{{ route('report.index') }}"
+            class="aq-nav-item {{ request()->routeIs('report.*') ? 'active' : '' }}">
+            <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+            <span>Report</span>
+            </a>
+            
 
             @endif
 
@@ -62,12 +84,6 @@
                class="aq-nav-item {{ request()->routeIs('monitoring') ? 'active' : '' }}">
                 <i class="bi bi-activity nav-icon"></i>
                 <span>Monitoring</span>
-            </a>
-
-            <a href="{{ route('charts') }}"
-               class="aq-nav-item {{ request()->routeIs('charts') ? 'active' : '' }}">
-                <i class="bi bi-graph-up-arrow nav-icon"></i>
-                <span>Grafik</span>
             </a>
 
             <span class="aq-nav-label">Account</span>
@@ -88,7 +104,9 @@
                 </div>
                 <div style="min-width:0;">
                     <div class="aq-user-name">{{ Auth::user()->name }}</div>
-                    <div class="aq-user-role">Administrator</div>
+                    <div class="aq-user-role">
+                        {{ ucfirst(Auth::user()->role) }}
+                    </div>
                 </div>
             </div>
             <div class="aq-online-dot" style="margin-bottom:0.625rem;">Online</div>
@@ -134,8 +152,6 @@
                             Dashboard
                         @elseif(request()->routeIs('monitoring'))
                             Monitoring
-                        @elseif(request()->routeIs('charts'))
-                            Grafik
                         @elseif(request()->routeIs('devices.*'))
                             Perangkat
                         @elseif(request()->routeIs('profile.*'))

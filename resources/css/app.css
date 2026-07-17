@@ -1132,3 +1132,121 @@ DEVICE STATS
     font-weight:700;
 
 }
+
+/* ===========================
+   Activity Timeline
+=========================== */
+
+.aq-timeline{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.aq-log-item{
+
+    display:flex;
+    gap:20px;
+
+    padding:20px;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    border:1px solid #eef2f7;
+
+}
+
+.aq-log-icon{
+
+    width:52px;
+    height:52px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+    color:white;
+
+    flex-shrink:0;
+
+}
+
+.aq-log-item.success .aq-log-icon{
+
+    background:#10b981;
+
+}
+
+.aq-log-item.warning .aq-log-icon{
+
+    background:#f59e0b;
+
+}
+
+.aq-log-content h5{
+
+    margin-bottom:6px;
+
+    font-weight:700;
+
+}
+
+.aq-log-content p{
+
+    margin-bottom:4px;
+
+}
+
+.aq-log-content small{
+
+    color:#8a94a6;
+
+}
+
+.aq-btn-icon{
+    width:36px;
+    height:36px;
+    border:none;
+    border-radius:10px;
+    background:#eef4ff;
+
+    color:#2563eb;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:.2s;
+}
+
+.aq-btn-icon:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.aq-btn-icon.text-danger{
+
+    background:#fef2f2;
+
+    color:#dc2626;
+
+}
+
+.aq-btn-icon.text-danger:hover{
+
+    background:#dc2626;
+
+    color:white;
+
+}

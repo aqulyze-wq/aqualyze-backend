@@ -11,32 +11,43 @@
 // ================================================================
 
 // ======================= Library ================================
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\ReportController;
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/monitoring', [DashboardController::class, 'monitoring'])
-    ->middleware(['auth', 'verified'])
-    ->name('monitoring');
-
-Route::get('/charts', [DashboardController::class, 'charts'])
-    ->middleware(['auth', 'verified'])
-    ->name('charts');
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED USER
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-    Route::get('/monitoring', [DashboardController::class, 'monitoring'])->name('monitoring');
+    Route::get('/monitoring', [DashboardController::class, 'monitoring'])
+        ->name('monitoring');
 
-    Route::get('/charts', [DashboardController::class, 'charts'])->name('charts');
+    Route::get('/charts', [DashboardController::class, 'charts'])
+        ->name('charts');
 
-     Route::get('/profile', [ProfileController::class, 'edit'])
+    Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
     Route::patch('/profile', [ProfileController::class, 'update'])
@@ -45,11 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-
-    
-
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +66,20 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
+    // Device Management
     Route::resource('devices', DeviceController::class);
+
+    // Account Management
+    Route::resource('users', UserController::class);
+
+    // Activity Log
+    Route::get('/activity-log',
+        [ActivityLogController::class, 'index']
+    )->name('activity.index');
+
+    // Report
+    Route::get('/report', [ReportController::class, 'index'])
+    ->name('report.index');
 
 });
 
