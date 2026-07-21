@@ -4,6 +4,54 @@
 
 {{-- Page Header --}}
 <div class="aq-page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    
+    <div class="aq-card mb-4">
+
+        <form method="GET">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-bold">
+
+                        Device
+
+                    </label>
+
+                    <select
+                        class="form-select"
+                        name="device"
+                        onchange="this.form.submit()">
+
+                        <option value="">
+
+                            Semua Device
+
+                        </option>
+
+                        @foreach($devices as $device)
+
+                            <option
+                                value="{{ $device->device_id }}"
+                                {{ request('device')==$device->device_id?'selected':'' }}>
+
+                                {{ $device->nama_device }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
     <div>
         <h1>Dashboard</h1>
         <p>Overview of water quality parameters — live sensor data.</p>

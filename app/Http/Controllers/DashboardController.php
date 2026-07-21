@@ -10,25 +10,47 @@
 // ================================================================
 
 // ======================= Library ================================
+
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Device;
 use App\Models\SensorData;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $latest = SensorData::orderByDesc('id')->first();
-    
-        $history = SensorData::orderByDesc('id')
+        $devices = Device::orderBy('nama_device')->get();
+
+        $selectedDevice = $request->device;
+
+        // Query dasar
+        $query = SensorData::query();
+
+        if ($selectedDevice) {
+            $query->where('device_id', $selectedDevice);
+        }
+
+        // Data terbaru
+        $latest = (clone $query)
+            ->latest()
+            ->first();
+
+        // History untuk chart
+        $history = (clone $query)
+            ->latest()
             ->take(20)
             ->get()
             ->reverse()
             ->values();
-    
-        $totalData = SensorData::count();
-    
+
+        // Total data
+        $totalData = (clone $query)->count();
+
         return view('dashboard', compact(
+            'devices',
+            'selectedDevice',
             'latest',
             'history',
             'totalData'
@@ -37,22 +59,22 @@ class DashboardController extends Controller
 
     public function monitoring()
     {
-        $latest = SensorData::orderBy('id', 'desc')->first();
-    
-        $history = SensorData::orderBy('id', 'desc')
+        $latest = SensorData::latest()->first();
+
+        $history = SensorData::latest()
             ->take(100)
             ->get()
             ->reverse()
             ->values();
-    
+
         return view('monitoring', compact('latest', 'history'));
     }
 
-   public function charts()
+    public function charts()
     {
-        $latest = SensorData::orderBy('id', 'desc')->first();
+        $latest = SensorData::latest()->first();
 
-        $history = SensorData::orderBy('id', 'desc')
+        $history = SensorData::latest()
             ->take(100)
             ->get()
             ->reverse()

@@ -2,7 +2,7 @@
 # Nama Sistem  : Aqualyze - Smart Water Monitoring System
 # Author       : Refan Rustoni Putra (10824005),
 #                Andini Putri Yani (10824011)
-# Versi        : 1.4.0
+# Versi        : 1.4.1
 # Tahun        : 2026
 # ================================================================
 
@@ -34,9 +34,7 @@ DEVICE_API = "http://127.0.0.1:8000/api/device/update"
 # ==========================
 
 def on_connect(client, userdata, flags, rc):
-
     print("Connected :", rc)
-
     client.subscribe(MQTT_TOPIC)
 
 
@@ -46,18 +44,15 @@ def on_message(client, userdata, msg):
 
         payload = json.loads(msg.payload.decode())
 
-        print("\n==============================")
+        print("\n========================================")
         print("MQTT MESSAGE")
-        print("==============================")
+        print("========================================")
 
         device_id = payload.get("device_id")
-
         timestamp = payload.get("timestamp")
 
         status = payload.get("status", {})
-
         location = payload.get("location", {})
-
         data = payload.get("data", {})
 
         print("Device ID :", device_id)
@@ -69,9 +64,9 @@ def on_message(client, userdata, msg):
         print("Longitude :", location.get("longitude"))
         print("Altitude  :", location.get("altitude_mdpl"))
 
-        print("--------------------------------")
+        print("----------------------------------------")
         print("Sensor")
-        print("--------------------------------")
+        print("----------------------------------------")
 
         print("Suhu       :", data.get("suhu"))
         print("pH         :", data.get("ph"))
@@ -84,25 +79,26 @@ def on_message(client, userdata, msg):
         device_payload = {
 
             "device_id": device_id,
-
             "status": status.get("node_status"),
-
             "ip": status.get("ip"),
-
             "latitude": location.get("latitude"),
-
             "longitude": location.get("longitude"),
-
             "altitude": location.get("altitude_mdpl")
 
         }
 
+        print("\n========== DEVICE API ==========")
+        print(device_payload)
+
         device_response = requests.post(
             DEVICE_API,
-            json=device_payload
+            json=device_payload,
+            timeout=10
         )
 
-        print("\nDevice API :", device_response.status_code)
+        print("Status Code :", device_response.status_code)
+        print("Response :")
+        print(device_response.text)
 
         # =====================================
         # Kirim Sensor
@@ -112,26 +108,65 @@ def on_message(client, userdata, msg):
 
             "device_id": device_id,
 
-            "suhu": data.get("suhu"),
+            "data": {
 
-            "ph": data.get("ph"),
+                "suhu": data.get("suhu"),
 
-            "kekeruhan": data.get("turbidity_ntu")
+                "ph": data.get("ph"),
+
+                "turbidity_ntu": data.get("turbidity_ntu"),
+
+                "status_suhu": data.get("status_suhu"),
+
+                "status_ph": data.get("status_ph"),
+
+                "status_kekeruhan": data.get("status_kekeruhan")
+
+            },
+
+            "status": {
+
+                "node_status": status.get("node_status"),
+
+                "ip": status.get("ip")
+
+            },
+
+            "location": {
+
+                "latitude": location.get("latitude"),
+
+                "longitude": location.get("longitude"),
+
+                "altitude_mdpl": location.get("altitude_mdpl")
+
+            }
 
         }
 
+        print("\n========== SENSOR PAYLOAD ==========")
+        print(json.dumps(sensor_payload, indent=4))
+
         sensor_response = requests.post(
             SENSOR_API,
-            json=sensor_payload
+            json=sensor_payload,
+            timeout=10
         )
 
-        print("Sensor API :", sensor_response.status_code)
-
+        print("Status Code :", sensor_response.status_code)
+        print("Response :")
         print(sensor_response.text)
+
+        print("\n========================================")
+        print("SELESAI")
+        print("========================================")
 
     except Exception as e:
 
-        print("\nERROR :", e)
+        print("\n========================================")
+        print("ERROR")
+        print("========================================")
+        print(e)
 
 
 # ==========================
@@ -148,7 +183,6 @@ client.username_pw_set(
 client.tls_set()
 
 client.on_connect = on_connect
-
 client.on_message = on_message
 
 client.connect(
