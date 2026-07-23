@@ -19,6 +19,8 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RuleEngineController;
+use App\Http\Controllers\RawDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +48,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/charts', [DashboardController::class, 'charts'])
         ->name('charts');
+
+    Route::get('/rule-engine', [RuleEngineController::class, 'index'])
+        ->name('rule-engine');
+
+    Route::put('/rule-engine', [RuleEngineController::class, 'update'])
+        ->name('rule-engine.update');
+
+    Route::get('/raw-data', [RawDataController::class, 'index'])
+        ->name('raw-data');
 
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');

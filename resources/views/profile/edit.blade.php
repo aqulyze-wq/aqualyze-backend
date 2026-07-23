@@ -54,36 +54,6 @@
             </div>
         </div>
 
-        {{-- Quick Links --}}
-        <div class="aq-card">
-            <div class="aq-card-header">
-                <span class="aq-card-title" style="font-size:0.8125rem;">Quick Links</span>
-            </div>
-            <div class="aq-card-body" style="padding:0.75rem;display:flex;flex-direction:column;gap:2px;">
-                <a href="{{ route('dashboard') }}"
-                   style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.875rem;border-radius:8px;color:var(--aq-text-secondary);font-size:0.8125rem;font-weight:500;text-decoration:none;transition:background 0.15s;"
-                   onmouseover="this.style.background='var(--aq-surface)';this.style.color='var(--aq-text-primary)'"
-                   onmouseout="this.style.background='transparent';this.style.color='var(--aq-text-secondary)'">
-                    <i class="bi bi-grid-1x2-fill" style="color:var(--aq-primary);font-size:1rem;width:20px;text-align:center;"></i>
-                    Dashboard
-                </a>
-                <a href="{{ route('monitoring') }}"
-                   style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.875rem;border-radius:8px;color:var(--aq-text-secondary);font-size:0.8125rem;font-weight:500;text-decoration:none;transition:background 0.15s;"
-                   onmouseover="this.style.background='var(--aq-surface)';this.style.color='var(--aq-text-primary)'"
-                   onmouseout="this.style.background='transparent';this.style.color='var(--aq-text-secondary)'">
-                    <i class="bi bi-activity" style="color:#7C3AED;font-size:1rem;width:20px;text-align:center;"></i>
-                    Monitoring
-                </a>
-                <a href="{{ route('charts') }}"
-                   style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.875rem;border-radius:8px;color:var(--aq-text-secondary);font-size:0.8125rem;font-weight:500;text-decoration:none;transition:background 0.15s;"
-                   onmouseover="this.style.background='var(--aq-surface)';this.style.color='var(--aq-text-primary)'"
-                   onmouseout="this.style.background='transparent';this.style.color='var(--aq-text-secondary)'">
-                    <i class="bi bi-graph-up-arrow" style="color:#0891B2;font-size:1rem;width:20px;text-align:center;"></i>
-                    Grafik
-                </a>
-            </div>
-        </div>
-
     </div>
 
     {{-- ── Forms Column ── --}}

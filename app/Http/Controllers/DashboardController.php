@@ -11,11 +11,13 @@
 
 // ======================= Library ================================
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\SensorData;
+use App\Models\ActivityLog; // <-- 1. Import Model ActivityLog di sini
 
 class DashboardController extends Controller
 {
@@ -25,17 +27,27 @@ class DashboardController extends Controller
 
         $selectedDevice = $request->device;
 
-        // Query dasar
+        // Query dasar untuk SensorData
         $query = SensorData::query();
 
         if ($selectedDevice) {
             $query->where('device_id', $selectedDevice);
         }
 
-        // Data terbaru
+        // Data statistik device dinamis
+        $totalDevices = Device::count();
+        
+        // Menghitung status online & offline
+        $onlineDevices = Device::where('status', 'online')->count();
+        $offlineDevices = Device::where('status', 'offline')->count();
+
+        // Data terbaru sensor
         $latest = (clone $query)
             ->latest()
             ->first();
+
+        // Waktu update terakhir
+        $lastUpdate = $latest ? $latest->created_at : Device::latest('updated_at')->first()?->updated_at;
 
         // History untuk chart
         $history = (clone $query)
@@ -45,6 +57,9 @@ class DashboardController extends Controller
             ->reverse()
             ->values();
 
+        // Ambil 4 Recent Activity Logs beserta relasi user
+        $recentActivities = ActivityLog::with('user')->latest()->take(4)->get();
+
         // Total data
         $totalData = (clone $query)->count();
 
@@ -53,7 +68,12 @@ class DashboardController extends Controller
             'selectedDevice',
             'latest',
             'history',
-            'totalData'
+            'totalData',
+            'totalDevices',
+            'onlineDevices',
+            'offlineDevices',
+            'lastUpdate',
+            'recentActivities' // <-- 2. Variabel disangkutkan ke view di sini
         ));
     }
 
