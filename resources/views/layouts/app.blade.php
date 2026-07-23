@@ -42,43 +42,19 @@
 
             <span class="aq-nav-label">Main Menu</span>
 
-            @if(Auth::user()->role == 'admin')
-
-            <a href="{{ route('devices.index') }}"
-            class="aq-nav-item {{ request()->routeIs('devices.*') ? 'active' : '' }}">
-            <i class="bi bi-router nav-icon"></i>
-            <span>Perangkat</span>
-            </a>
-
-            <a href="{{ route('users.index') }}"
-            class="aq-nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
-
-            <i class="bi bi-people-fill nav-icon"></i>
-
-            <span>Account Management</span>
-
-            </a>
-
-            <a href="{{ route('activity.index') }}"
-            class="aq-nav-item {{ request()->routeIs('activity.*') ? 'active' : '' }}">
-            <i class="bi bi-clock-history nav-icon"></i>
-            <span>Activity Log</span>
-            </a>
-
-            <a href="{{ route('report.index') }}"
-            class="aq-nav-item {{ request()->routeIs('report.*') ? 'active' : '' }}">
-            <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
-            <span>Report</span>
-            </a>
-            
-
-            @endif
-
             <a href="{{ route('dashboard') }}"
                class="aq-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2-fill nav-icon"></i>
                 <span>Dashboard</span>
             </a>
+
+            @if(Auth::user()->role == 'admin')
+                <a href="{{ route('devices.index') }}"
+                   class="aq-nav-item {{ request()->routeIs('devices.*') ? 'active' : '' }}">
+                    <i class="bi bi-router nav-icon"></i>
+                    <span>Devices</span>
+                </a>
+            @endif
 
             <a href="{{ route('monitoring') }}"
                class="aq-nav-item {{ request()->routeIs('monitoring') ? 'active' : '' }}">
@@ -86,12 +62,44 @@
                 <span>Monitoring</span>
             </a>
 
+            <a href="{{ route('rule-engine') }}"
+               class="aq-nav-item {{ request()->routeIs('rule-engine') ? 'active' : '' }}">
+                <i class="bi bi-gear-fill nav-icon"></i>
+                <span>Rule Engine</span>
+            </a>
+
+            <a href="{{ route('raw-data') }}"
+               class="aq-nav-item {{ request()->routeIs('raw-data') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-medical-fill nav-icon"></i>
+                <span>Raw Data</span>
+            </a>
+
             <span class="aq-nav-label">Account</span>
 
-            <a href="{{ route('dashboard') }}"
+            @if(Auth::user()->role == 'admin')
+                <a href="{{ route('activity.index') }}"
+                   class="aq-nav-item {{ request()->routeIs('activity.*') ? 'active' : '' }}">
+                    <i class="bi bi-clock-history nav-icon"></i>
+                    <span>Activity Logs</span>
+                </a>
+
+                <a href="{{ route('users.index') }}"
+                   class="aq-nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                    <i class="bi bi-people-fill nav-icon"></i>
+                    <span>Account Management</span>
+                </a>
+
+                <a href="{{ route('report.index') }}"
+                   class="aq-nav-item {{ request()->routeIs('report.*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                    <span>Reports</span>
+                </a>
+            @endif
+
+            <a href="{{ route('profile.edit') }}"
                class="aq-nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
                 <i class="bi bi-person-circle nav-icon"></i>
-                <span>Profil</span>
+                <span>Profile</span>
             </a>
 
         </nav>
@@ -137,11 +145,15 @@
                         @elseif(request()->routeIs('monitoring'))
                             Monitoring Sensor
                         @elseif(request()->routeIs('charts'))
-                            Grafik Data
+                            Charts
                         @elseif(request()->routeIs('devices.*'))
-                            Manajemen Perangkat
+                            Device Management
+                        @elseif(request()->routeIs('rule-engine'))
+                            Rule Engine
+                        @elseif(request()->routeIs('raw-data'))
+                            Raw Data
                         @elseif(request()->routeIs('profile.*'))
-                            Profil Akun
+                            Profile
                         @else
                             Aqualyze
                         @endif
@@ -152,10 +164,16 @@
                             Dashboard
                         @elseif(request()->routeIs('monitoring'))
                             Monitoring
+                        @elseif(request()->routeIs('charts'))
+                            Charts
                         @elseif(request()->routeIs('devices.*'))
-                            Perangkat
+                            Devices
+                        @elseif(request()->routeIs('rule-engine'))
+                            Rule Engine
+                        @elseif(request()->routeIs('raw-data'))
+                            Raw Data
                         @elseif(request()->routeIs('profile.*'))
-                            Profil
+                            Profile
                         @else
                             Home
                         @endif
