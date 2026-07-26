@@ -103,7 +103,6 @@
             <thead>
                 <tr class="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold">
                     <th class="p-3 rounded-l-lg">Device ID</th>
-                    <th class="p-3">Nama Device</th>
                     <th class="p-3">Jenis Ikan</th>
                     <th class="p-3">Lokasi</th>
                     <th class="p-3 text-center">Status</th>
@@ -116,9 +115,6 @@
                     <tr class="hover:bg-slate-50/80 transition-colors">
                         <td class="p-3 font-semibold text-slate-800">
                             {{ $device->device_id }}
-                        </td>
-                        <td class="p-3 text-slate-700">
-                            {{ $device->nama_device }}
                         </td>
                         <td class="p-3 text-slate-600">
                             {{ $device->jenis_ikan ?? '-' }}
