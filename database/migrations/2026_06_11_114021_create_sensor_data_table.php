@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('sensor_data', function (Blueprint $table) {
             $table->id();
-
+            $table->foreignId('device_id');
             $table->float('suhu');
             $table->float('ph');
             $table->float('kekeruhan');
-
-            $table->string('status_suhu');
-            $table->string('status_ph');
-            $table->string('status_kekeruhan');
-
+            
+            // Tambahkan ->nullable() di sini
+            $table->string('status_suhu')->nullable();
+            $table->string('status_ph')->nullable();
+            $table->string('status_kekeruhan')->nullable();
+            
             $table->timestamps();
         });
 }

@@ -49,6 +49,13 @@
                 <span>Dashboard</span>
             </a>
 
+            {{-- MENU MAP DITAMBAHKAN DI SINI --}}
+            <a href="{{ route('map') }}"
+               class="aq-nav-item {{ request()->routeIs('map*') ? 'active' : '' }}">
+                <i class="bi bi-geo-alt-fill nav-icon"></i>
+                <span>Map Lokasi</span>
+            </a>
+
             @if(Auth::user()->role == 'admin')
                 <a href="{{ route('devices.index') }}"
                    class="aq-nav-item {{ request()->routeIs('devices.*') ? 'active' : '' }}">
@@ -56,12 +63,6 @@
                     <span>Devices</span>
                 </a>
             @endif
-
-            <a href="{{ route('monitoring') }}"
-               class="aq-nav-item {{ request()->routeIs('monitoring') ? 'active' : '' }}">
-                <i class="bi bi-activity nav-icon"></i>
-                <span>Monitoring</span>
-            </a>
 
             <a href="{{ route('rule-engine') }}"
                class="aq-nav-item {{ request()->routeIs('rule-engine') ? 'active' : '' }}">
@@ -143,6 +144,8 @@
                     <div class="aq-page-title">
                         @if(request()->routeIs('dashboard'))
                             Dashboard
+                        @elseif(request()->routeIs('map*'))
+                            Map Lokasi
                         @elseif(request()->routeIs('monitoring'))
                             Monitoring Sensor
                         @elseif(request()->routeIs('charts'))
@@ -163,6 +166,8 @@
                         Aqualyze &rsaquo;
                         @if(request()->routeIs('dashboard'))
                             Dashboard
+                        @elseif(request()->routeIs('map*'))
+                            Map Lokasi
                         @elseif(request()->routeIs('monitoring'))
                             Monitoring
                         @elseif(request()->routeIs('charts'))
@@ -217,11 +222,12 @@
         document.body.style.overflow = '';
     }
 
-    // Close sidebar on escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeSidebar();
     });
 </script>
+
+@stack('scripts')
 
 </body>
 </html>

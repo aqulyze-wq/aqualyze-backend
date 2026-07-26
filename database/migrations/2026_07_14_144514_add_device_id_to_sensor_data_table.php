@@ -9,16 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('sensor_data', function (Blueprint $table) {
-
-            $table->foreignId('device_id')
-                ->nullable()
-                ->after('id')
-                ->constrained('devices')
-                ->nullOnDelete();
-
+            if (!Schema::hasColumn('sensor_data', 'device_id')) {
+                $table->unsignedBigInteger('device_id')->nullable()->after('id');
+            }
         });
     }
 

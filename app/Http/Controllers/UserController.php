@@ -5,15 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helpers\ActivityHelper;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->get();
+        $search = $request->query('search');
+        $role   = $request->query('role');
+
+        $users = User::query()
+            ->when($search, function ($query, $value) {
+                $query->where(function ($q) use ($value) {
+                    $q->where('name', 'like', "%{$value}%")
+                      ->orWhere('email', 'like', "%{$value}%");
+                });
+            })
+            ->when($role, function ($query, $value) {
+                $query->where('role', $value);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('users.index', compact('users'));
     }
 
@@ -31,30 +48,27 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'role' => 'required'
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role'     => ['required', Rule::in(['admin', 'user'])],
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => bcrypt($request->password),
-            'role' => $request->role
+            'role'     => $request->role,
         ]);
 
         ActivityHelper::log(
-
             'User',
-
-            'Menambahkan user '.$request->name
-
+            'Menambahkan user ' . $user->name
         );
 
         return redirect()
             ->route('users.index')
-            ->with('success','User berhasil ditambahkan.');
+            ->with('success', 'User berhasil ditambahkan.');
     }
 
     /**
@@ -76,41 +90,36 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, User $user)
+    public function update(Request $request, User $user)
     {
         $request->validate([
-
-            'name'=>'required',
-
-            'email'=>'required|email|unique:users,email,'.$user->id,
-
-            'role'=>'required'
-
+            'name'     => 'required|string|max:255',
+            'email'    => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'role'     => ['required', Rule::in(['admin', 'user'])],
+            'password' => 'nullable|string|min:6', // Password opsional saat update
         ]);
 
-        $user->update([
+        $data = [
+            'name'  => $request->name,
+            'email' => $request->email,
+            'role'  => $request->role,
+        ];
 
-            'name'=>$request->name,
+        // Update password hanya jika diisi
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
 
-            'email'=>$request->email,
-
-            'role'=>$request->role
-
-        ]);
+        $user->update($data);
 
         ActivityHelper::log(
-
             'User',
-
-            'Mengubah user '.$user->name
-
+            'Mengubah user ' . $user->name
         );
 
         return redirect()
-
             ->route('users.index')
-
-            ->with('success','User berhasil diperbarui.');
+            ->with('success', 'User berhasil diperbarui.');
     }
 
     /**
@@ -118,18 +127,22 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Mencegah user menghapus akunnya sendiri yang sedang login
+        if (auth()->id() === $user->id) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
         ActivityHelper::log(
-
             'User',
-
-            'Menghapus user '.$user->name
-
+            'Menghapus user ' . $user->name
         );
 
         $user->delete();
 
         return redirect()
             ->route('users.index')
-            ->with('success','User berhasil dihapus.');
+            ->with('success', 'User berhasil dihapus.');
     }
 }

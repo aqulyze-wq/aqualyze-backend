@@ -17,8 +17,6 @@ return new class extends Migration
 
             $table->string('device_id')->unique();
 
-            $table->string('nama_device');
-
             $table->string('lokasi')->nullable();
 
             $table->decimal('latitude',10,7)->nullable();

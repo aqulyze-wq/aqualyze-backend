@@ -2,222 +2,228 @@
 
 @section('content')
 
-<div class="aq-page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-    <div>
-        <h1>Rule Engine</h1>
-        <p>Configure threshold values used to classify sensor readings.</p>
-    </div>
+<style>
+    .re-container { padding: 10px 0; }
+    .re-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .re-title h1 { font-size: 24px; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; }
+    .re-title p { font-size: 14px; color: #64748b; margin: 0; }
+    .re-btn-save {
+        background: #0284c7;
+        color: #ffffff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .re-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+    }
+    .re-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+    }
+    .re-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .re-card-title h3 { font-size: 16px; font-weight: 700; color: #1e293b; margin: 0; }
+    .re-zone {
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #f8fafc;
+    }
+    .re-zone-normal { border-left: 4px solid #10b981; background: #f0fdf4; }
+    .re-zone-warning { border-left: 4px solid #f59e0b; background: #fffbeb; }
+    .re-zone-danger { border-left: 4px solid #ef4444; background: #fef2f2; }
+    .re-input-group { display: flex; gap: 10px; }
+    .re-input-box { flex: 1; }
+    .re-input-box label { display: block; font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
+    .re-input-box input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 13px;
+        outline: none;
+    }
+</style>
+
+<div class="re-container">
+    <form action="{{ route('rule-engine.update') }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="re-header">
+            <div class="re-title">
+                <h1>Rule Engine & Thresholds</h1>
+                <p>Pengaturan nilai batas ambang sensor.</p>
+            </div>
+            <button type="submit" class="re-btn-save">
+                <i class="bi bi-floppy-fill"></i> Simpan
+            </button>
+        </div>
+
+        @if(session('success'))
+            <div class="alert alert-success mb-4" style="border-radius: 12px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="re-grid">
+
+            <!-- CARD 1: TEMPERATURE -->
+            <div class="re-card">
+                <div class="re-card-header">
+                    <div class="re-card-title">
+                        <h3>Temperature (°C)</h3>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-normal">
+                    <strong>Normal Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Min</label>
+                            <input type="number" step="any" name="temperature_normal_min" value="{{ old('temperature_normal_min', $ruleEngine->temperature_normal_min ?? '') }}">
+                        </div>
+                        <div class="re-input-box">
+                            <label>Max</label>
+                            <input type="number" step="any" name="temperature_normal_max" value="{{ old('temperature_normal_max', $ruleEngine->temperature_normal_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-warning">
+                    <strong>Warning Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Min</label>
+                            <input type="number" step="any" name="temperature_warning_min" value="{{ old('temperature_warning_min', $ruleEngine->temperature_warning_min ?? '') }}">
+                        </div>
+                        <div class="re-input-box">
+                            <label>Max</label>
+                            <input type="number" step="any" name="temperature_warning_max" value="{{ old('temperature_warning_max', $ruleEngine->temperature_warning_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-danger">
+                    <strong>Danger Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Min Danger</label>
+                            <input type="number" step="any" name="temperature_danger_min" value="{{ old('temperature_danger_min', $ruleEngine->temperature_danger_min ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: pH LEVEL -->
+            <div class="re-card">
+                <div class="re-card-header">
+                    <div class="re-card-title">
+                        <h3>pH Level</h3>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-normal">
+                    <strong>Normal Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Min</label>
+                            <input type="number" step="any" name="ph_normal_min" value="{{ old('ph_normal_min', $ruleEngine->ph_normal_min ?? '') }}">
+                        </div>
+                        <div class="re-input-box">
+                            <label>Max</label>
+                            <input type="number" step="any" name="ph_normal_max" value="{{ old('ph_normal_max', $ruleEngine->ph_normal_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-warning">
+                    <strong>Warning Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Min</label>
+                            <input type="number" step="any" name="ph_warning_min" value="{{ old('ph_warning_min', $ruleEngine->ph_warning_min ?? '') }}">
+                        </div>
+                        <div class="re-input-box">
+                            <label>Max</label>
+                            <input type="number" step="any" name="ph_warning_max" value="{{ old('ph_warning_max', $ruleEngine->ph_warning_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-danger">
+                    <strong>Danger Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Min Danger</label>
+                            <input type="number" step="any" name="ph_danger_min" value="{{ old('ph_danger_min', $ruleEngine->ph_danger_min ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: TURBIDITY -->
+            <div class="re-card">
+                <div class="re-card-header">
+                    <div class="re-card-title">
+                        <h3>Turbidity (NTU)</h3>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-normal">
+                    <strong>Very Clear Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Max NTU</label>
+                            <input type="number" step="any" name="turbidity_very_clear_max" value="{{ old('turbidity_very_clear_max', $ruleEngine->turbidity_very_clear_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-warning">
+                    <strong>Clear Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Max NTU</label>
+                            <input type="number" step="any" name="turbidity_clear_max" value="{{ old('turbidity_clear_max', $ruleEngine->turbidity_clear_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="re-zone re-zone-danger">
+                    <strong>Turbid Zone</strong>
+                    <div class="re-input-group mt-2">
+                        <div class="re-input-box">
+                            <label>Max NTU</label>
+                            <input type="number" step="any" name="turbidity_turbid_max" value="{{ old('turbidity_turbid_max', $ruleEngine->turbidity_turbid_max ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
 </div>
-
-@if(session('success'))
-    <div class="aq-alert aq-alert-success mb-4">
-        <i class="bi bi-check-circle-fill aq-alert-icon"></i>
-        <div class="aq-alert-text">{{ session('success') }}</div>
-    </div>
-@endif
-
-@if($errors->any())
-    <div class="aq-alert aq-alert-warning mb-4">
-        <i class="bi bi-exclamation-triangle-fill aq-alert-icon"></i>
-        <div class="aq-alert-text">
-            Please correct the highlighted values and try again.
-        </div>
-    </div>
-@endif
-
-<form method="POST" action="{{ route('rule-engine.update') }}" novalidate>
-    @csrf
-    @method('PUT')
-
-    <div class="row g-4">
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="aq-card h-100 border-0 shadow-sm">
-                <div class="aq-card-header pb-3">
-                    <div>
-                        <span class="aq-card-title">Temperature Threshold</span>
-                        <div class="text-muted small mt-1">Configure temperature classification.</div>
-                    </div>
-                </div>
-                <div class="aq-card-body pt-0">
-                    <div class="mb-3">
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Normal</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="temperature_normal_min">Min</label>
-                                    <input type="number" step="0.01" name="temperature_normal_min" id="temperature_normal_min" class="aq-input @error('temperature_normal_min') error @enderror" value="{{ old('temperature_normal_min', $ruleEngine->temperature_normal_min ?? 25) }}" required>
-                                    @error('temperature_normal_min')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="temperature_normal_max">Max</label>
-                                    <input type="number" step="0.01" name="temperature_normal_max" id="temperature_normal_max" class="aq-input @error('temperature_normal_max') error @enderror" value="{{ old('temperature_normal_max', $ruleEngine->temperature_normal_max ?? 30) }}" required>
-                                    @error('temperature_normal_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Warning</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="temperature_warning_min">Min</label>
-                                    <input type="number" step="0.01" name="temperature_warning_min" id="temperature_warning_min" class="aq-input @error('temperature_warning_min') error @enderror" value="{{ old('temperature_warning_min', $ruleEngine->temperature_warning_min ?? 30) }}" required>
-                                    @error('temperature_warning_min')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="temperature_warning_max">Max</label>
-                                    <input type="number" step="0.01" name="temperature_warning_max" id="temperature_warning_max" class="aq-input @error('temperature_warning_max') error @enderror" value="{{ old('temperature_warning_max', $ruleEngine->temperature_warning_max ?? 32) }}" required>
-                                    @error('temperature_warning_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Danger</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="temperature_danger_min">Min</label>
-                                    <input type="number" step="0.01" name="temperature_danger_min" id="temperature_danger_min" class="aq-input @error('temperature_danger_min') error @enderror" value="{{ old('temperature_danger_min', $ruleEngine->temperature_danger_min ?? 32) }}" required>
-                                    @error('temperature_danger_min')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-muted small mt-3">Unit: °C</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="aq-card h-100 border-0 shadow-sm">
-                <div class="aq-card-header pb-3">
-                    <div>
-                        <span class="aq-card-title">pH Threshold</span>
-                        <div class="text-muted small mt-1">Configure pH classification.</div>
-                    </div>
-                </div>
-                <div class="aq-card-body pt-0">
-                    <div class="mb-3">
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Normal</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="ph_normal_min">Min</label>
-                                    <input type="number" step="0.01" name="ph_normal_min" id="ph_normal_min" class="aq-input @error('ph_normal_min') error @enderror" value="{{ old('ph_normal_min', $ruleEngine->ph_normal_min ?? 6.5) }}" required>
-                                    @error('ph_normal_min')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="ph_normal_max">Max</label>
-                                    <input type="number" step="0.01" name="ph_normal_max" id="ph_normal_max" class="aq-input @error('ph_normal_max') error @enderror" value="{{ old('ph_normal_max', $ruleEngine->ph_normal_max ?? 8.5) }}" required>
-                                    @error('ph_normal_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Warning</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="ph_warning_min">Min</label>
-                                    <input type="number" step="0.01" name="ph_warning_min" id="ph_warning_min" class="aq-input @error('ph_warning_min') error @enderror" value="{{ old('ph_warning_min', $ruleEngine->ph_warning_min ?? 6.0) }}" required>
-                                    @error('ph_warning_min')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="ph_warning_max">Max</label>
-                                    <input type="number" step="0.01" name="ph_warning_max" id="ph_warning_max" class="aq-input @error('ph_warning_max') error @enderror" value="{{ old('ph_warning_max', $ruleEngine->ph_warning_max ?? 6.5) }}" required>
-                                    @error('ph_warning_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Danger</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="ph_danger_min">Min</label>
-                                    <input type="number" step="0.01" name="ph_danger_min" id="ph_danger_min" class="aq-input @error('ph_danger_min') error @enderror" value="{{ old('ph_danger_min', $ruleEngine->ph_danger_min ?? 6.0) }}" required>
-                                    @error('ph_danger_min')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="aq-card h-100 border-0 shadow-sm">
-                <div class="aq-card-header pb-3">
-                    <div>
-                        <span class="aq-card-title">Turbidity Threshold</span>
-                        <div class="text-muted small mt-1">Configure turbidity classification.</div>
-                    </div>
-                </div>
-                <div class="aq-card-body pt-0">
-                    <div class="mb-3">
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Very Clear</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="turbidity_very_clear_max">Max</label>
-                                    <input type="number" step="0.01" name="turbidity_very_clear_max" id="turbidity_very_clear_max" class="aq-input @error('turbidity_very_clear_max') error @enderror" value="{{ old('turbidity_very_clear_max', $ruleEngine->turbidity_very_clear_max ?? 5) }}" required>
-                                    @error('turbidity_very_clear_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Clear</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="turbidity_clear_max">Max</label>
-                                    <input type="number" step="0.01" name="turbidity_clear_max" id="turbidity_clear_max" class="aq-input @error('turbidity_clear_max') error @enderror" value="{{ old('turbidity_clear_max', $ruleEngine->turbidity_clear_max ?? 20) }}" required>
-                                    @error('turbidity_clear_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="fw-semibold text-secondary small text-uppercase mb-2">Turbid</div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                <div class="aq-form-group mb-0">
-                                    <label class="aq-label" for="turbidity_turbid_max">Max</label>
-                                    <input type="number" step="0.01" name="turbidity_turbid_max" id="turbidity_turbid_max" class="aq-input @error('turbidity_turbid_max') error @enderror" value="{{ old('turbidity_turbid_max', $ruleEngine->turbidity_turbid_max ?? 50) }}" required>
-                                    @error('turbidity_turbid_max')<div class="aq-input-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-muted small mt-3">Unit: NTU</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a href="{{ route('dashboard') }}" class="aq-btn aq-btn-outline">Cancel</a>
-        <button type="submit" class="aq-btn aq-btn-primary">Save Changes</button>
-    </div>
-</form>
 
 @endsection

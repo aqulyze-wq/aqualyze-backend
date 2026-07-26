@@ -2,7 +2,7 @@
 # Nama Sistem  : Aqualyze - Smart Water Monitoring System
 # Author       : Refan Rustoni Putra (10824005),
 #                Andini Putri Yani (10824011)
-# Versi        : 1.4.1
+# Versi        : 1.4.2
 # Tahun        : 2026
 # ================================================================
 
@@ -13,182 +13,123 @@ import paho.mqtt.client as mqtt
 # ==========================
 # MQTT Configuration
 # ==========================
-
 MQTT_BROKER = "fcb0ad941e3f418f8dc1d16332c8fcb9.s1.eu.hivemq.cloud"
 MQTT_PORT = 8883
-
 MQTT_USER = "aqualyze"
 MQTT_PASS = "aqualyze123"
-
 MQTT_TOPIC = "monitoringair/data"
 
 # ==========================
 # Laravel API
 # ==========================
-
+# Cukup kirim ke Sensor API karena SensorController sudah memproses data Device & Sensor sekaligus!
 SENSOR_API = "http://127.0.0.1:8000/api/sensor"
-DEVICE_API = "http://127.0.0.1:8000/api/device/update"
+
 
 # ==========================
-# MQTT Callback
+# MQTT Callbacks
 # ==========================
-
-def on_connect(client, userdata, flags, rc):
-    print("Connected :", rc)
-    client.subscribe(MQTT_TOPIC)
+def on_connect(client, userdata, flags, rc, properties=None):
+    if rc == 0:
+        print(" Connected to MQTT Broker HiveMQ!")
+        client.subscribe(MQTT_TOPIC)
+        print(f" Subscribed to topic: {MQTT_TOPIC}\n")
+    else:
+        print(f" Connection failed with code {rc}")
 
 
 def on_message(client, userdata, msg):
-
     try:
-
-        payload = json.loads(msg.payload.decode())
+        # Decode JSON payload
+        payload = json.loads(msg.payload.decode('utf-8'))
 
         print("\n========================================")
-        print("MQTT MESSAGE")
+        print(" MQTT MESSAGE RECEIVED")
         print("========================================")
 
         device_id = payload.get("device_id")
+        lokasi = payload.get("lokasi")
         timestamp = payload.get("timestamp")
 
         status = payload.get("status", {})
         location = payload.get("location", {})
         data = payload.get("data", {})
 
-        print("Device ID :", device_id)
-        print("Timestamp :", timestamp)
-        print("Status    :", status.get("node_status"))
-        print("IP        :", status.get("ip"))
-
-        print("Latitude  :", location.get("latitude"))
-        print("Longitude :", location.get("longitude"))
-        print("Altitude  :", location.get("altitude_mdpl"))
+        print(f"Device ID   : {device_id}")
+        print(f"Lokasi      : {lokasi}")
+        print(f"Timestamp   : {timestamp}")
+        print(f"Node Status : {status.get('node_status')}")
+        print(f"IP          : {status.get('ip')}")
+        print(f"Lat / Long  : {location.get('latitude')}, {location.get('longitude')}")
 
         print("----------------------------------------")
-        print("Sensor")
-        print("----------------------------------------")
+        print("Sensor Values:")
+        print(f"Suhu        : {data.get('suhu')} °C ({data.get('status_suhu')})")
+        print(f"pH          : {data.get('ph')} ({data.get('status_ph')})")
+        print(f"Kekeruhan   : {data.get('turbidity_ntu')} NTU ({data.get('status_kekeruhan')})")
 
-        print("Suhu       :", data.get("suhu"))
-        print("pH         :", data.get("ph"))
-        print("Kekeruhan  :", data.get("turbidity_ntu"))
-
-        # =====================================
-        # Update Device
-        # =====================================
-
-        device_payload = {
-
-            "device_id": device_id,
-            "status": status.get("node_status"),
-            "ip": status.get("ip"),
-            "latitude": location.get("latitude"),
-            "longitude": location.get("longitude"),
-            "altitude": location.get("altitude_mdpl")
-
-        }
-
-        print("\n========== DEVICE API ==========")
-        print(device_payload)
-
-        device_response = requests.post(
-            DEVICE_API,
-            json=device_payload,
-            timeout=10
-        )
-
-        print("Status Code :", device_response.status_code)
-        print("Response :")
-        print(device_response.text)
-
-        # =====================================
-        # Kirim Sensor
-        # =====================================
-
+        # Format Payload yang dikirim ke Laravel API
         sensor_payload = {
-
             "device_id": device_id,
-
+            "lokasi": lokasi,
             "data": {
-
                 "suhu": data.get("suhu"),
-
                 "ph": data.get("ph"),
-
                 "turbidity_ntu": data.get("turbidity_ntu"),
-
                 "status_suhu": data.get("status_suhu"),
-
                 "status_ph": data.get("status_ph"),
-
                 "status_kekeruhan": data.get("status_kekeruhan")
-
             },
-
             "status": {
-
                 "node_status": status.get("node_status"),
-
                 "ip": status.get("ip")
-
             },
-
             "location": {
-
                 "latitude": location.get("latitude"),
-
                 "longitude": location.get("longitude"),
-
                 "altitude_mdpl": location.get("altitude_mdpl")
-
             }
-
         }
 
-        print("\n========== SENSOR PAYLOAD ==========")
-        print(json.dumps(sensor_payload, indent=4))
-
+        # Send Request to Laravel API
+        headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
         sensor_response = requests.post(
             SENSOR_API,
             json=sensor_payload,
+            headers=headers,
             timeout=10
         )
 
+        print("\n========== LARAVEL API RESPONSE ==========")
         print("Status Code :", sensor_response.status_code)
-        print("Response :")
-        print(sensor_response.text)
-
-        print("\n========================================")
-        print("SELESAI")
-        print("========================================")
+        print("Response    :", sensor_response.text)
+        print("========================================\n")
 
     except Exception as e:
-
         print("\n========================================")
-        print("ERROR")
+        print(" ERROR PROCESSING MESSAGE")
         print("========================================")
-        print(e)
+        print("Error details:", str(e))
 
 
 # ==========================
-# MQTT Client
+# MQTT Client Setup
 # ==========================
+# Kompatibel dengan paho-mqtt v1 dan v2
+try:
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+except AttributeError:
+    client = mqtt.Client()
 
-client = mqtt.Client()
+client.username_pw_set(MQTT_USER, MQTT_PASS)
 
-client.username_pw_set(
-    MQTT_USER,
-    MQTT_PASS
-)
-
+# Setup TLS untuk HiveMQ Cloud
 client.tls_set()
 
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect(
-    MQTT_BROKER,
-    MQTT_PORT,
-    60
-)
+print("Connecting to HiveMQ Broker...")
+client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
 client.loop_forever()
