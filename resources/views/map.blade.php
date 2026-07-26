@@ -124,9 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <div style="min-width:220px">
 
-                <h6 style="margin-bottom:10px;font-weight:700;">
-                    ${device.nama_device}
-                </h6>
 
                 <table style="width:100%;font-size:13px">
 
